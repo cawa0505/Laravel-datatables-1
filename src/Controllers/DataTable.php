@@ -51,15 +51,15 @@ class DataTable extends ParentClass
     /**
      * Has searchables for columns
      * SearchFilter columns
-     * 
+     *
      * @var bool
      */
     protected $hasSearch = false;
 
     /**
      * Global search field
-     * 
-     * @var mixed 
+     *
+     * @var mixed
      */
     protected $search;
 
@@ -76,7 +76,8 @@ class DataTable extends ParentClass
         $this->cacheName = "datatables::{$tableModel->id}";
 
         $this->originalModel = cache()->rememberForever(
-            "{$this->cacheName}originalModel", function () use ($model) {
+            "{$this->cacheName}originalModel",
+            function () use ($model) {
                 return $model->get()->first();
             }
         );
@@ -222,7 +223,6 @@ class DataTable extends ParentClass
 
         $collection = $this->encryptKeys($middlewared->unique()->values()->toArray());
 
-
         $data['recordsTotal'] = $count;
         $data['recordsFiltered'] = $count;
         $data['data'] = $collection ?? [];
@@ -239,7 +239,8 @@ class DataTable extends ParentClass
     private function runMiddleware(object $collection): object
     {
         $middlewares = array_filter(
-            $this->tableModel->fields, function ($field) {
+            $this->tableModel->fields,
+            function ($field) {
                 return is_object($field) && get_class($field) === 'SingleQuote\DataTables\Fields\Middleware';
             }
         );
@@ -274,9 +275,12 @@ class DataTable extends ParentClass
         if ($middleware->middlewareModel) {
             $collection->each(
                 function ($model) use ($middleware, $restrictions) {
-                    $modelItem = $middleware->middlewareModel === 'model' ? $model : $middleware->middlewareModel;
+                    $modelItem = $middleware->middlewareModel === 'model' ?
+                    $model
+                    : $middleware->middlewareModel;
                     $model->idem = $model->{$middleware->column};
-                    $model->{$middleware->column} = $this->filterPermissions($restrictions, $modelItem) ? $model->{$middleware->column} : null;
+                    $model->{$middleware->column} = $this->filterPermissions($restrictions, $modelItem) ?
+                    $model->{$middleware->column} : null;
                 }
             );
         }
@@ -286,7 +290,7 @@ class DataTable extends ParentClass
 
     /**
      * Filter the user roles
-     * 
+     *
      * @param  array $restrictions
      * @return bool
      */
@@ -296,7 +300,8 @@ class DataTable extends ParentClass
 
         foreach ($restrictions['roles'] as $roles) {
             $check = array_filter(
-                $roles, function ($role) {
+                $roles,
+                function ($role) {
                     return Request::user()->hasRole($role);
                 }
             );
@@ -308,7 +313,7 @@ class DataTable extends ParentClass
 
     /**
      * Filter the user permissions.
-     * 
+     *
      * @param  array $restrictions
      * @param  mixed $model
      * @return bool
@@ -318,7 +323,8 @@ class DataTable extends ParentClass
         $proceedPermission = !count($restrictions['permissions']) > 0;
         foreach ($restrictions['permissions'] as $permissions) {
             $check = array_filter(
-                $permissions, function ($permission) use ($model) {
+                $permissions,
+                function ($permission) use ($model) {
                     return Request::user()->can($permission, $model);
                 }
             );
@@ -403,8 +409,13 @@ class DataTable extends ParentClass
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @param int                                   $index
      */
-    private function searchOnQuery(string $phrase, string $column, \Illuminate\Database\Eloquent\Builder $query, int $index, $secondSearchType = 'orWhereRaw')
-    {
+    private function searchOnQuery(
+        string $phrase,
+        string $column,
+        \Illuminate\Database\Eloquent\Builder $query,
+        int $index,
+        $secondSearchType = 'orWhereRaw'
+    ) {
         if ($index === 0 && !Str::contains($column, '.')) {
             $query->whereRaw("lower($column) LIKE ?", "%{$phrase}%");
         } elseif ($index > 0 && !Str::contains($column, '.')) {
@@ -418,15 +429,20 @@ class DataTable extends ParentClass
      * @param string                                $column
      * @param \Illuminate\Database\Eloquent\Builder $query
      */
-    public function searchOnRelation(string $phrase, string $column, \Illuminate\Database\Eloquent\Builder $query, $searchType = 'orWhereHas')
-    {
+    public function searchOnRelation(
+        string $phrase,
+        string $column,
+        \Illuminate\Database\Eloquent\Builder $query,
+        $searchType = 'orWhereHas'
+    ) {
         if (Str::contains($column, '.')) {
             $original = $this->findOriginalColumn($column);
 
             $explode = explode('.', $original);
 
             $query->{$searchType}(
-                $explode[0], function ($query) use ($explode, $phrase) {
+                $explode[0],
+                function ($query) use ($explode, $phrase) {
                     $query->whereRaw("lower($explode[1]) LIKE ?", "%{$phrase}%");
                 }
             );

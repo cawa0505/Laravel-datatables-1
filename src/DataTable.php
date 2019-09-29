@@ -218,7 +218,8 @@ class DataTable
      */
     private function toLower(string $string): string
     {
-        return strtolower(preg_replace("/(?<=[a-zA-Z])(?=[A-Z])/", "_", $string));
+        // return strtolower(preg_replace("/(?<=[a-zA-Z])(?=[A-Z])/", "_", $string));
+        return $string;
     }
 
     /**

@@ -104,7 +104,7 @@ abstract class ColumnBuilder
      *
      * @var string
      */
-    public $dom = "<'row'<'col-sm-3'l><'col-sm-3'f>> <'row'<'col-sm-12'tr>> <'row'<'col-sm-5'i><'col-sm-7'p>>";
+    public $dom = "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>> <'row'<'col-sm-12'tr>> <'row'<'col-sm-5'i><'col-sm-7'p>>";
 
     /**
      * Set the translations for the header
@@ -162,7 +162,8 @@ abstract class ColumnBuilder
      */
     private function toLower(string $string) : string
     {
-        return strtolower(preg_replace("/(?<=[a-zA-Z])(?=[A-Z])/", "_", $string));
+        // return strtolower(preg_replace("/(?<=[a-zA-Z])(?=[A-Z])/", "_", $string));
+        return $string;
     }
     
     /**
