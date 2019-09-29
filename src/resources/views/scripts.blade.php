@@ -105,7 +105,8 @@
             "language" : locale,
             "paging": true,
             "processing": true,
-            "serverSide": true,
+            "serverSide": true, 
+            "authWitdh": false, // use authWidth will auto assign width style for column, but it will fail when window resize, so set to false will be ok
             "dom" : "{!! $view->dom !!}",
             "ajax": `${uri}${mark}laravel-datatables=active&tableId={{ $view->tableId }}&id={{ $view->id }}${filters}${filterSearch}`,
             "pageLength" : {{ $view->pageLength }},
